@@ -6,8 +6,19 @@ export const swaggerOptions: swaggerJsdoc.Options = {
     info: {
       title: "Ecommerce API",
       version: "1.0.0",
-      description: "API para Ecommerce con autenticación, roles, carrito, productos y pagos",
+      description: "API para Ecommerce con autenticación, roles, carrito, órdenes y pagos con Stripe",
     },
+    servers: [
+      {
+        url: "http://localhost:3000/api", // ✅ Swagger enviará todas las requests con /api
+        description: "Local Server",
+      },
+      // Si después desplegamos en Railway agregamos aquí:
+      // {
+      //   url: "https://ecommerce-production.up.railway.app/api",
+      //   description: "Production Server"
+      // }
+    ],
     components: {
       securitySchemes: {
         bearerAuth: {
@@ -17,7 +28,11 @@ export const swaggerOptions: swaggerJsdoc.Options = {
         },
       },
     },
-    security: [{ bearerAuth: [] }],
+    security: [
+      {
+        bearerAuth: [], // ✅ Swagger enviará el JWT automáticamente
+      },
+    ],
   },
-  apis: ["./src/routes/*.ts"], // aquí Swagger buscará los @swagger
+  apis: ["./src/routes/*.ts"], // ✅ Swagger detectará los @swagger en las rutas
 };

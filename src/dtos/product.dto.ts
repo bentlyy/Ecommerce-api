@@ -7,11 +7,12 @@ export const createProductSchema = z.object({
   currency: z.string().default("usd"),
   stock: z.coerce.number().int().min(0).default(0),
   imageUrl: z.string().url().optional(),
-  // puedes crear por categoryId o por categoryName (uno de los dos)
+
+  // ✅ Si viene categoryName, ignoramos categoryId
   categoryId: z.number().int().positive().optional(),
   categoryName: z.string().min(2).optional(),
-}).refine((data) => data.categoryId || data.categoryName || true, {
-  message: "Puedes pasar categoryId o categoryName (opcional)",
+}).refine((data) => data.categoryId || data.categoryName, {
+  message: "Debes enviar categoryId o categoryName",
 });
 
 export type CreateProductDTO = z.infer<typeof createProductSchema>;

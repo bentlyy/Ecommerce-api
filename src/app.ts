@@ -9,23 +9,24 @@ import swaggerUi from "swagger-ui-express";
 import swaggerJsdoc from "swagger-jsdoc";
 import { swaggerOptions } from "./config/swagger";
 
-// Stripe webhook necesita raw body
+// Stripe Webhook: RAW body
 import { rawBodyBuffer } from "./middlewares/rawbody.middleware";
 
 const app = express();
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
 /**
- * 1) RAW BODY para Stripe Webhook — ANTES de express.json()
- *    Esta ruta NO debe usar json(), porque Stripe valida la firma del body
+ * ✅ 1) RAW BODY SOLO para Stripe Webhook
+ *    — Esta ruta se declara ANTES del JSON parser
  */
-app.use(
+app.post(
   "/api/payments/webhook",
-  express.raw({ type: "application/json", verify: rawBodyBuffer })
+  express.raw({ type: "application/json", verify: rawBodyBuffer }),
+  routes // <-- el webhook real será resuelto por payments.routes
 );
 
 /**
- * 2) JSON NORMAL para el resto de la API
+ * ✅ 2) JSON normal para todas las demás rutas
  */
 app.use(express.json());
 app.use(cors());
@@ -38,22 +39,22 @@ app.use(
 app.use(morgan("dev"));
 
 /**
- * 3) Swagger
+ * ✅ 3) Swagger Docs
  */
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 /**
- * 4) Rutas API
+ * ✅ 4) API Routes
  */
 app.use("/api", routes);
 
 /**
- * 5) Middleware de errores (último siempre)
+ * ✅ 5) Error Handler
  */
 app.use(errorMiddleware);
 
 /**
- * 6) Ruta raíz
+ * ✅ 6) Health Check
  */
 app.get("/", (_req, res) => {
   res.json({ message: "Ecommerce API 🚀" });
