@@ -1,0 +1,167 @@
+🛒 Shop Backend (Ecommerce API)
+
+Shop Backend es una API REST profesional desarrollada con Node.js, TypeScript, Prisma y PostgreSQL, que implementa todas las funcionalidades base de un e-commerce moderno: autenticación, roles, gestión de productos, carrito de compras, órdenes y pagos con Stripe.
+
+Creada con enfoque modular, escalable y de nivel productivo, ideal para demostrar dominio backend en un entorno real con buenas prácticas, documentación Swagger y arquitectura limpia.
+
+🧩 Características principales
+
+🔐 Registro, login y perfil con JWT
+
+👥 Roles ADMIN / CUSTOMER
+
+🛍️ CRUD completo de productos
+
+🛒 Carrito de compras con control de stock
+
+📦 Órdenes de compra desde carrito
+
+💳 Checkout y webhook de Stripe (CLP)
+
+⚙️ Validaciones con Zod
+
+🧱 Arquitectura modular por capas
+
+🧾 Documentación interactiva con Swagger
+
+🚀 Ejecución local
+Recurso	URL
+🌍 API Local	http://localhost:3000/api
+📘 Swagger Docs	http://localhost:3000/api/docs
+
+💡 No hay despliegue en producción. Este proyecto está optimizado para entorno local o contenedores Docker.
+
+🖼️ Capturas (Swagger UI)
+
+📸 Reemplaza las siguientes imágenes con tus capturas reales.
+
+
+
+
+
+
+🧠 Flujo general (E1)
+flowchart TD
+  A[Usuario] -->|Register/Login| B[Auth (JWT)]
+  B -->|Token válido| C[Carrito (Cart)]
+  C -->|Agrega productos| D[Orders]
+  D -->|Checkout| E[Stripe Checkout]
+  E -->|Webhook éxito| F[Orden pagada]
+  F --> G[Confirmación al usuario]
+
+👥 Roles y permisos (E3)
+Acción	ADMIN	CUSTOMER
+Crear productos	✅	❌
+Editar productos	✅	❌
+Eliminar productos	✅	❌
+Ver productos	✅	✅
+Agregar al carrito	✅	✅
+Crear orden	✅	✅
+Ver todas las órdenes	✅	❌
+Ver sus órdenes	✅	✅
+🧱 Arquitectura del proyecto
+src/
+├─ config/
+│  ├─ prisma.ts
+│  ├─ stripe.ts
+│  └─ swagger.ts
+│
+├─ controllers/
+│  ├─ auth.controller.ts
+│  ├─ cart.controller.ts
+│  ├─ orders.controller.ts
+│  └─ products.controller.ts
+│
+├─ services/
+│  ├─ auth.service.ts
+│  ├─ cart.service.ts
+│  ├─ orders.service.ts
+│  └─ products.service.ts
+│
+├─ middlewares/
+│  ├─ auth.middleware.ts
+│  ├─ role.middleware.ts
+│  ├─ validate.middleware.ts
+│  └─ rawbody.middleware.ts
+│
+├─ dtos/
+│  ├─ auth.dto.ts
+│  ├─ cart.dto.ts
+│  ├─ product.dto.ts
+│  └─ order.dto.ts
+│
+├─ routes/
+│  ├─ auth.routes.ts
+│  ├─ cart.routes.ts
+│  ├─ orders.routes.ts
+│  ├─ products.routes.ts
+│  └─ payments.routes.ts
+│
+└─ app.ts / server.ts
+
+📦 Endpoints principales
+Método	Endpoint	Descripción
+Auth		
+POST	/auth/register	Registro de usuario
+POST	/auth/login	Iniciar sesión y obtener token
+GET	/auth/profile	Perfil del usuario (JWT requerido)
+Products		
+POST	/products	Crear producto (ADMIN)
+GET	/products	Listar productos
+GET	/products/:id	Detalle de producto
+PUT	/products/:id	Actualizar producto (ADMIN)
+DELETE	/products/:id	Desactivar producto (ADMIN)
+Cart		
+GET	/cart	Obtener carrito actual
+POST	/cart	Agregar producto
+PUT	/cart/:productId	Actualizar cantidad
+DELETE	/cart/:productId	Eliminar producto
+DELETE	/cart	Vaciar carrito
+Orders / Payments		
+POST	/orders/checkout	Crear orden desde carrito
+GET	/orders	Listar órdenes del usuario
+GET	/orders/admin	Listar todas (ADMIN)
+POST	/payments/checkout	Crear sesión de pago Stripe
+POST	/payments/webhook	Webhook Stripe
+⚙️ Instalación local
+git clone https://github.com/tuusuario/shop-backend.git
+cd shop-backend
+npm install
+
+⚙️ Variables de entorno .env
+PORT=3000
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/shopdb"
+JWT_SECRET=supersecretkey
+JWT_EXPIRES_IN=7d
+STRIPE_SECRET_KEY=sk_test_xxx
+STRIPE_WEBHOOK_SECRET=whsec_xxx
+
+🐳 Ejecución con Docker
+docker compose up --build
+
+
+API disponible en http://localhost:3000/api
+Swagger en http://localhost:3000/api/docs
+
+🔧 Scripts disponibles
+Script	Acción
+npm run dev	Inicia modo desarrollo con nodemon
+npm run build	Compila TypeScript a JavaScript
+npm start	Ejecuta versión compilada
+npx prisma studio	Interfaz visual de la base de datos
+🧭 Roadmap
+
+ Tests automáticos con Jest
+
+ Control de stock dinámico en checkout
+
+ Roles avanzados (ADMIN / STAFF / CUSTOMER)
+
+ Frontend React con Dashboard Admin
+
+ Notificaciones en tiempo real (Socket.IO)
+
+👤 Autor
+
+Alejandro Muñoz Garay
+🔗 LinkedIn
