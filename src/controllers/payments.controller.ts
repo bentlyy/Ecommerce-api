@@ -8,7 +8,7 @@ const service = new PaymentsService();
 
 export class PaymentsController {
   /**
-   * Crea una sesión de Checkout y devuelve la URL para redirigir al usuario.
+   * Crea sesión de pago y devuelve URL Stripe
    */
   static async createCheckoutSession(req: AuthRequest, res: Response) {
     try {
@@ -21,11 +21,11 @@ export class PaymentsController {
   }
 
   /**
-   * Webhook de Stripe (raw body + firma)
+   * Webhook Stripe — verifica firma y procesa orden
    */
   static async webhook(req: Request, res: Response) {
     try {
-      // @ts-ignore - leemos rawBody que setea el bodyParser del app para esta ruta
+      // @ts-ignore (leído por rawBody middleware)
       const sig = req.headers["stripe-signature"] as string;
       // @ts-ignore
       const rawBody = req.rawBody as string;
@@ -40,8 +40,25 @@ export class PaymentsController {
 
       res.json({ received: true });
     } catch (err: any) {
-      // Firma inválida o error de parseo
       return res.status(400).send(`Webhook Error: ${err.message}`);
     }
+  }
+
+  /**
+   * Página temporal de éxito
+   */
+  static async successPage(_req: Request, res: Response) {
+    res.send(
+      `<h1>✅ Pago completado</h1><p>Gracias por tu compra. Tu orden está pagada.</p>`
+    );
+  }
+
+  /**
+   * Página temporal de cancelación
+   */
+  static async cancelPage(_req: Request, res: Response) {
+    res.send(
+      `<h1>❌ Pago cancelado</h1><p>No se ha realizado el cobro.</p>`
+    );
   }
 }

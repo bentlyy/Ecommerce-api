@@ -13,7 +13,7 @@ const router = Router();
 
 /**
  * @swagger
- * /api/payments/checkout:
+ * /payments/checkout:
  *   post:
  *     summary: Crear Checkout Session (Stripe) y devolver URL de pago
  *     tags: [Payments]
@@ -31,7 +31,7 @@ router.post("/checkout", authMiddleware, PaymentsController.createCheckoutSessio
 
 /**
  * @swagger
- * /api/payments/webhook:
+ * /payments/webhook:
  *   post:
  *     summary: Webhook de Stripe (no requiere auth)
  *     tags: [Payments]
@@ -42,5 +42,9 @@ router.post("/checkout", authMiddleware, PaymentsController.createCheckoutSessio
  *         description: Firma inválida / error
  */
 router.post("/webhook", PaymentsController.webhook);
+
+// ✅ Vistas temporales para éxito y cancelación (Flujo C)
+router.get("/success", PaymentsController.successPage);
+router.get("/cancel", PaymentsController.cancelPage);
 
 export default router;

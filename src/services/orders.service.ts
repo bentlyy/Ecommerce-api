@@ -145,32 +145,32 @@ export class OrdersService {
   // ===== ADMIN =====
 
   async adminListAll(query: AdminListOrdersQueryDTO) {
-    const { page, limit, status, userId } = query;
+  const { page, limit, status, userId } = query;
 
-    const where: Prisma.OrderWhereInput = {
-      ...(status ? { status } : {}),
-      ...(userId ? { userId } : {}),
-    };
+  const where: Prisma.OrderWhereInput = {
+    ...(status ? { status } : {}),
+    ...(userId !== undefined ? { userId } : {}), // ✅ FIX aplicado
+  };
 
-    const [items, total] = await Promise.all([
-      prisma.order.findMany({
-        where,
-        orderBy: { createdAt: "desc" },
-        skip: (page - 1) * limit,
-        take: limit,
-        include: { items: true, user: true },
-      }),
-      prisma.order.count({ where }),
-    ]);
+  const [items, total] = await Promise.all([
+    prisma.order.findMany({
+      where,
+      orderBy: { createdAt: "desc" },
+      skip: (page - 1) * limit,
+      take: limit,
+      include: { items: true, user: true },
+    }),
+    prisma.order.count({ where }),
+  ]);
 
-    return {
-      page,
-      limit,
-      total,
-      pages: Math.ceil(total / limit),
-      items,
-    };
-  }
+  return {
+    page,
+    limit,
+    total,
+    pages: total === 0 ? 0 : Math.ceil(total / limit),
+    items, // ✅ Ahora, si no hay resultados, devuelve "items: []" sin errores
+  };
+}
 
   async adminGetById(orderId: number) {
     const order = await prisma.order.findUnique({
