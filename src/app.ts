@@ -4,6 +4,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 import routes from "./routes";
 import { errorMiddleware } from "./middlewares/error.middleware";
+import paymentsRoutes from "./routes/payments.routes"; // agregar arriba
 
 import swaggerUi from "swagger-ui-express";
 import swaggerJsdoc from "swagger-jsdoc";
@@ -22,7 +23,7 @@ const swaggerSpec = swaggerJsdoc(swaggerOptions);
 app.post(
   "/api/payments/webhook",
   express.raw({ type: "application/json", verify: rawBodyBuffer }),
-  routes // <-- el webhook real será resuelto por payments.routes
+  paymentsRoutes
 );
 
 /**
